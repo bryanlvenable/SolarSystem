@@ -10,6 +10,25 @@ var Particle = famous.physics.bodies.Particle;
 var Drag = famous.physics.forces.Drag;
 var RepulsionForce = famous.physics.forces.Repulsion;
 
+// Create orbit object
+var circularOrbit = {};
+
+// Add methods to circularOrbit
+circularOrbit.distance = function(x1, y1, z1, x2, y2, z2){
+  var distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2) + Math.pow(z2 - z1, 2));
+  return distance;
+};
+
+circularOrbit.gravity = function(altitude, velocity){
+  var k = 1; // This is a constant that needs to be determined, currently works with 
+  var gravity = k * velocity * Math.sqrt(altitude);
+  console.log('gravity: ', gravity);
+  return gravity;
+};
+
+
+
+
 // create the main context
 var mainContext = Engine.createContext();
 
@@ -56,7 +75,8 @@ var satelliteModifier = new Modifier({
 });
 
 var gravity = new RepulsionForce({
-  strength: -2
+  strength: -circularOrbit.gravity(100, 0.1)
+  // strength: -2
 });
 
 // var dragForce = new Drag({
