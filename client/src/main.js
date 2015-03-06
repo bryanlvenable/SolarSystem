@@ -14,8 +14,10 @@ var RepulsionForce = famous.physics.forces.Repulsion;
 var circularOrbit = {};
 
 // Add methods to circularOrbit
-circularOrbit.distance = function(x1, y1, z1, x2, y2, z2){
-  var distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2) + Math.pow(z2 - z1, 2));
+// Inputs are ojects with keys x, y, and z and corresponding position value pairs
+// Ex firstParticle = {x: 12, y: 2, z: -4.2};
+circularOrbit.distance = function(firstParticle, secondParticle){
+  var distance = Math.sqrt(Math.pow(secondParticle.x - firstParticle.x, 2) + Math.pow(secondParticle.y - firstParticle.y, 2) + Math.pow(secondParticle.z - firstParticle.z, 2));
   return distance;
 };
 
@@ -92,6 +94,7 @@ satelliteParticle.setVelocity([velocityInitial, 0, 0]);
 mainContext.add(planetModifier).add(planetSurface);
 
 mainContext.add(satelliteModifier).add(satelliteSurface);
+
 // your app here
 var logo = new ImageSurface({
     size: [200, 200],
