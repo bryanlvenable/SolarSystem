@@ -9,6 +9,7 @@ var PhysicsEngine = famous.physics.PhysicsEngine;
 var Particle = famous.physics.bodies.Particle;
 var Drag = famous.physics.forces.Drag;
 var RepulsionForce = famous.physics.forces.Repulsion;
+var Timer = famous.utilities.Timer;
 
 // Create orbit object
 var circularOrbit = {};
@@ -94,6 +95,11 @@ satelliteParticle.setVelocity([velocityInitial, 0, 0]);
 mainContext.add(planetModifier).add(planetSurface);
 
 mainContext.add(satelliteModifier).add(satelliteSurface);
+
+Timer.every(function(){
+  // console.log('satelliteParticle position: ', satelliteParticle.position);
+  console.log('distance: ', circularOrbit.distance(satelliteParticle.position, planetParticle.position))
+}, 60);
 
 // your app here
 var logo = new ImageSurface({
