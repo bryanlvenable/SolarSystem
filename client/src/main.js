@@ -26,7 +26,9 @@ circularOrbit.gravity = function(altitude, velocity){
   return gravity;
 };
 
-
+// Create orbit variables
+var altitudeInitial = 100;
+var velocityInitial = 0.1;
 
 
 // create the main context
@@ -60,7 +62,7 @@ var satelliteSurface = new Surface({
 });
 
 var satelliteParticle = new Particle({
-  position: [0, -100, 0]
+  position: [0, -altitudeInitial, 0]
 });
 
 physics.addBody(satelliteParticle);
@@ -85,7 +87,7 @@ var gravity = new RepulsionForce({
 
 physics.attach(gravity, satelliteParticle, planetParticle);
 
-satelliteParticle.setVelocity([0.1, 0, 0]);
+satelliteParticle.setVelocity([velocityInitial, 0, 0]);
 
 mainContext.add(planetModifier).add(planetSurface);
 
