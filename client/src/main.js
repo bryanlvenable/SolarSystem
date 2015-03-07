@@ -1,5 +1,6 @@
-/*global famous*/
-// import dependencies
+// client/src/main.js
+
+// Import dependencies
 var Engine = famous.core.Engine;
 var Modifier = famous.core.Modifier;
 var Transform = famous.core.Transform;
@@ -10,6 +11,15 @@ var Particle = famous.physics.bodies.Particle;
 var Drag = famous.physics.forces.Drag;
 var RepulsionForce = famous.physics.forces.Repulsion;
 var Timer = famous.utilities.Timer;
+
+// Use dat physics!
+var physics = new PhysicsEngine();
+
+// create the main context
+var mainContext = Engine.createContext();
+
+
+// ========== Setup orbital equations ========== //
 
 // Create orbit object
 var circularOrbit = {};
@@ -22,6 +32,7 @@ circularOrbit.distance = function(firstParticle, secondParticle){
   return distance;
 };
 
+// Determine the gravity given altitude and velocity
 circularOrbit.gravity = function(altitude, velocity){
   var k = 1; // This is a constant that needs to be determined, currently works with 
   var gravity = k * velocity * Math.sqrt(altitude);
@@ -34,19 +45,15 @@ var altitudeInitial = 100;
 var velocityInitial = 0.1;
 
 
-// create the main context
-var mainContext = Engine.createContext();
-
-var physics = new PhysicsEngine();
+// ========== Setup planet ========== //
 
 var planetSurface = new Surface({
   properties: {
     backgroundColor: 'blue'
   }
-})
+});
 
 var planetParticle = new Particle();
-
 physics.addBody(planetParticle);
 
 var planetModifier = new Modifier({
@@ -57,6 +64,9 @@ var planetModifier = new Modifier({
     return planetParticle.getTransform();
   }
 });
+
+
+// ========== Setup satellite ========== //
 
 var satelliteSurface = new Surface({
   properties: {
@@ -79,45 +89,28 @@ var satelliteModifier = new Modifier({
   }
 });
 
+
+// ========== Awesome physics ========== //
+
+// Define the gravity that will be applied
 var gravity = new RepulsionForce({
   strength: -circularOrbit.gravity(100, 0.1)
   // strength: -2
 });
 
-// var dragForce = new Drag({
-//   strength: 0.001
-// })
-
+// Apply gravity to the planet and the satellite
 physics.attach(gravity, satelliteParticle, planetParticle);
 
+// Give the satellite an initial velocity
 satelliteParticle.setVelocity([velocityInitial, 0, 0]);
 
 mainContext.add(planetModifier).add(planetSurface);
-
 mainContext.add(satelliteModifier).add(satelliteSurface);
 
+// Display altitude
 Timer.every(function(){
-  // console.log('satelliteParticle position: ', satelliteParticle.position);
-  console.log('distance: ', circularOrbit.distance(satelliteParticle.position, planetParticle.position))
+  console.log('Altitude: ', circularOrbit.distance(satelliteParticle.position, planetParticle.position))
 }, 60);
 
-// your app here
-var logo = new ImageSurface({
-    size: [200, 200],
-    content: 'http://code.famo.us/assets/famous_logo.png',
-    classes: ['double-sided']
-});
-
-var initialTime = Date.now();
-var centerSpinModifier = new Modifier({
-    origin: [0.5, 0.5],
-    align: [0.5, 0.5],
-    transform : function () {
-        return Transform.rotateY(.002 * (Date.now() - initialTime));
-    }
-});
 
 
-// mainContext.add(centerSpinModifier).add(logo);
-
-// Try to put it all together

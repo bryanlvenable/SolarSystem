@@ -1,4 +1,4 @@
-// src/views/EmptyView.js
+// client/src/views/EmptyView.js
 
 // define this module in Require.JS
 define(function(require, exports, module) {
