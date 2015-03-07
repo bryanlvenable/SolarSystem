@@ -95,8 +95,11 @@ var satelliteModifier = new Modifier({
 
 // Define the gravity that will be applied
 var gravity = new RepulsionForce({
+  // Note: this becomes unstable at large velocities
+  // A possible way to deal with this is to use the GRAVITY method
+  // See Famo.us API docs http://famo.us/docs/api/latest/physics/forces/Repulsion
+  // Also look at the repulsion source code https://github.com/Famous/famous/blob/develop/src/physics/forces/Repulsion.js
   strength: -circularOrbit.gravity(altitudeInitial, velocityInitial)
-  // strength: -2
 });
 
 // Apply gravity to the planet and the satellite
