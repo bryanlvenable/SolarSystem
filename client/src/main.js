@@ -34,14 +34,15 @@ circularOrbit.distance = function(firstParticle, secondParticle){
 
 // Determine the gravity given altitude and velocity
 circularOrbit.gravity = function(altitude, velocity){
-  var k = 1; // This is a constant that needs to be determined, currently works with 
-  var gravity = k * velocity * Math.sqrt(altitude);
+  var k = 1; // This is a constant that needs to be determined, currently works with a reasonable error
+  // var gravity = k * velocity * Math.sqrt(altitude);
+  var gravity = k * velocity * velocity * altitude;
   console.log('gravity: ', gravity);
   return gravity;
 };
 
 // Create orbit variables
-var altitudeInitial = 100;
+var altitudeInitial = 300;
 var velocityInitial = 0.1;
 
 
@@ -94,7 +95,7 @@ var satelliteModifier = new Modifier({
 
 // Define the gravity that will be applied
 var gravity = new RepulsionForce({
-  strength: -circularOrbit.gravity(100, 0.1)
+  strength: -circularOrbit.gravity(altitudeInitial, velocityInitial)
   // strength: -2
 });
 
