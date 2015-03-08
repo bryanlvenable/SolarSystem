@@ -55,9 +55,20 @@ circularOrbit.velocity = function(altitude, gravity){
   return velocity;
 };
 
+// Determine the altitude given gravity and velocity
+ellipticalOrbit.gravity = function(altitude, velocity, semiMajorAxis, semiMinorAxis){
+  // This works for a perfect ellipse
+  // Next up: do this for an ellipse that will change angles with every pass (like the attomic symbol)
+  var gravity = velocity * velocity * altitude * semiMajorAxis / ((2 * semiMajorAxis) - altitude);
+  console.log('gravity: ', gravity);
+  return gravity;
+};
+
 // Create orbit variables
-var altitudeInitial = 400;
-var velocityInitial = 0.2;
+var altitudeInitial = 50;
+var velocityInitial = 0.5;
+var semiMinorAxis = 150;
+var semiMajorAxis = 100;
 
 
 // ========== Setup planet ========== //
@@ -113,8 +124,9 @@ var gravity = new RepulsionForce({
   // A possible way to deal with this is to use the GRAVITY method
   // See Famo.us API docs http://famo.us/docs/api/latest/physics/forces/Repulsion
   // Also look at the repulsion source code https://github.com/Famous/famous/blob/develop/src/physics/forces/Repulsion.js
-
-  strength: -circularOrbit.gravity(altitudeInitial, velocityInitial)
+  // strength: -circularOrbit.gravity(altitudeInitial, velocityInitial)
+  strength: -ellipticalOrbit.gravity(altitudeInitial, velocityInitial, semiMajorAxis, semiMinorAxis)
+  // strength: -2
 });
 
 // Apply gravity to the planet and the satellite
