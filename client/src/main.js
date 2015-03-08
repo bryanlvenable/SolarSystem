@@ -21,8 +21,9 @@ var mainContext = Engine.createContext();
 
 // ========== Setup orbital equations ========== //
 
-// Create orbit object
+// Create orbit objects
 var circularOrbit = {};
+var ellipticalOrbit = {};
 
 // Add methods to circularOrbit
 // Inputs are ojects with keys x, y, and z and corresponding position value pairs
@@ -35,15 +36,28 @@ circularOrbit.distance = function(firstParticle, secondParticle){
 // Determine the gravity given altitude and velocity
 circularOrbit.gravity = function(altitude, velocity){
   var k = 1; // This is a constant that needs to be determined, currently works with a reasonable error
-  // var gravity = k * velocity * Math.sqrt(altitude);
   var gravity = k * velocity * velocity * altitude;
   console.log('gravity: ', gravity);
   return gravity;
 };
 
+// Determine the altitude given gravity and velocity
+circularOrbit.altitude = function(gravity, velocity){
+  var altitude = gravity / (velocity * velocity);
+  console.log('altitude: ', altitude);
+  return altitude;
+};
+
+// Determine the altitude given gravity and velocity
+circularOrbit.velocity = function(altitude, gravity){
+  var velocity = Math.sqrt(gravity / altitude);
+  console.log('velocity: ', velocity);
+  return velocity;
+};
+
 // Create orbit variables
-var altitudeInitial = 300;
-var velocityInitial = 0.1;
+var altitudeInitial = 400;
+var velocityInitial = 0.2;
 
 
 // ========== Setup planet ========== //
@@ -99,6 +113,7 @@ var gravity = new RepulsionForce({
   // A possible way to deal with this is to use the GRAVITY method
   // See Famo.us API docs http://famo.us/docs/api/latest/physics/forces/Repulsion
   // Also look at the repulsion source code https://github.com/Famous/famous/blob/develop/src/physics/forces/Repulsion.js
+
   strength: -circularOrbit.gravity(altitudeInitial, velocityInitial)
 });
 
