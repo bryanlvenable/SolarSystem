@@ -12,7 +12,7 @@ var Drag = famous.physics.forces.Drag;
 var RepulsionForce = famous.physics.forces.Repulsion;
 var Timer = famous.utilities.Timer;
 
-// Use dat physics!
+// Use physics engine
 var physics = new PhysicsEngine();
 
 // create the main context
