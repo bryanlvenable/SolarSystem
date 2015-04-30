@@ -11,6 +11,7 @@ var Particle = famous.physics.bodies.Particle;
 var Drag = famous.physics.forces.Drag;
 var RepulsionForce = famous.physics.forces.Repulsion;
 var Timer = famous.utilities.Timer;
+var Circle = famous.physics.bodies.Circle;
 
 // Use physics engine
 var physics = new PhysicsEngine();
@@ -19,7 +20,7 @@ var physics = new PhysicsEngine();
 var mainContext = Engine.createContext();
 
 
-// ========== Setup orbital equations ========== //
+// ========== Setup circular orbital equations ========== //
 
 // Create orbit objects
 var circularOrbit = {};
@@ -55,6 +56,9 @@ circularOrbit.velocity = function(altitude, gravity){
   return velocity;
 };
 
+
+// ========== Setup elliptical orbital equations ========== //
+
 // Determine the altitude given gravity and velocity
 ellipticalOrbit.gravity = function(altitude, velocity, semiMajorAxis, semiMinorAxis){
   // This works for a perfect ellipse
@@ -65,8 +69,8 @@ ellipticalOrbit.gravity = function(altitude, velocity, semiMajorAxis, semiMinorA
 };
 
 // Create orbit variables
-var altitudeInitial = 50;
-var velocityInitial = 0.5;
+var altitudeInitial = 100;
+var velocityInitial = 0.25;
 var semiMinorAxis = 150;
 var semiMajorAxis = 100;
 
@@ -116,6 +120,30 @@ var satelliteModifier = new Modifier({
 });
 
 
+// ========== Setup satellite ========== //
+
+var circleSurface = new Surface({
+  properties: {
+    backgroundColor: 'gray'
+  }
+});
+
+var circleParticle = new Circle({
+  position: [0, -altitudeInitial, 0]
+});
+
+physics.addBody(circleParticle);
+
+var circleModifier = new Modifier({
+  // size: [25, 25],
+  align: [0.5, 0.5],
+  origin: [0.5, 0.5],
+  transform: function() {
+    return satelliteParticle.getTransform();
+  }
+});
+
+
 // ========== Awesome physics ========== //
 
 // Define the gravity that will be applied
@@ -124,24 +152,29 @@ var gravity = new RepulsionForce({
   // A possible way to deal with this is to use the GRAVITY method
   // See Famo.us API docs http://famo.us/docs/api/latest/physics/forces/Repulsion
   // Also look at the repulsion source code https://github.com/Famous/famous/blob/develop/src/physics/forces/Repulsion.js
-  // strength: -circularOrbit.gravity(altitudeInitial, velocityInitial)
-  strength: -ellipticalOrbit.gravity(altitudeInitial, velocityInitial, semiMajorAxis, semiMinorAxis)
+
+  strength: -circularOrbit.gravity(altitudeInitial, velocityInitial)
+  // strength: -ellipticalOrbit.gravity(altitudeInitial, velocityInitial, semiMajorAxis, semiMinorAxis)
   // strength: -2
 });
 
 // Apply gravity to the planet and the satellite
 physics.attach(gravity, satelliteParticle, planetParticle);
+// physics.attach(gravity, circleParticle, planetParticle);
 
 // Give the satellite an initial velocity
 satelliteParticle.setVelocity([velocityInitial, 0, 0]);
+// circleParticle.setVelocity([velocityInitial, 0, 0]);
 
 mainContext.add(planetModifier).add(planetSurface);
 mainContext.add(satelliteModifier).add(satelliteSurface);
+// mainContext.add(circleModifier).add(circleSurface);
 
 // Display altitude
 Timer.every(function(){
-  console.log('Altitude: ', circularOrbit.distance(satelliteParticle.position, planetParticle.position))
-}, 60);
+  console.log('Altitude: ', circularOrbit.distance(satelliteParticle.position, planetParticle.position));
+  // console.log('Altitude: ', circularOrbit.distance(circleParticle.position, planetParticle.position));
+}, 10);
 
 
 
